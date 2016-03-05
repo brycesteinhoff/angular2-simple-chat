@@ -9,14 +9,14 @@ var port = 8080;
 app.use(express.static('public'));
 
 // Routes
-app.get('/', function(req, res)
-{
-	res.sendFile(__dirname + '/app/views/index.html');
-});
-
 app.get('/partials/:name', function(req, res)
 {
 	res.sendFile(__dirname + '/app/views/partials/' + req.params.name + '.html');
+});
+
+app.get('*', function(req, res)
+{
+	res.sendFile(__dirname + '/app/views/index.html');
 });
 
 // Listen
