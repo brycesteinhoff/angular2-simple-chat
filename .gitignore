@@ -2,3 +2,4 @@ ChatApp.sublime-project
 ChatApp.sublime-workspace
 /.vagrant
 /node_modules
+/public/build
