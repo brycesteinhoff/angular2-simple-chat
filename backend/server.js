@@ -8,14 +8,18 @@ var mongoose = require('mongoose');
 
 var config = require('./config');
 var apiRoutes = require('./api-routes');
+var chat = require('./handlers/chat');
 
 // Bootstrap
+console.log('Booting up');
 var app = new express();
 var httpServer = http.createServer(app);
 var ioServer = new io(httpServer);
 
 // Parse body for JSON
 app.use(bodyParser.json());
+
+console.log('Setting up routes');
 
 // Public directory
 app.use(express.static(path.resolve(__dirname + '/../public')));
@@ -24,6 +28,7 @@ app.use(express.static(path.resolve(__dirname + '/../public')));
 apiRoutes(app);
 
 // Partials route
+// Probably don't need this after all
 // app.get('/partials/:name', function(req, res)
 // {	
 // 	res.sendFile(path.resolve(__dirname + '/../app/views/partials/' + req.params.name + '.html'));
@@ -36,14 +41,18 @@ app.get('*', function(req, res)
 });
 
 // Connect to database
+console.log('Connecting to MongoDB database');
 mongoose.connect('mongodb://localhost/' + config.db);
-// Should check to make sure db connected successfully
-
-// Listen
-httpServer.listen(config.httpPort, function()
+mongoose.connection.on('connected', function()
 {
-	console.info("🌎  Listening on port %s", config.httpPort);
+	console.log('Mongoose connected to ' + config.db + ' database');
 });
+mongoose.connection.on('error', function(err)
+{
+	console.log('Mongoose connection error:', err);
+});
+
+console.log('Configuring socket.io');
 
 // Require JWT authorization for websocket connections
 ioServer.use(ioJwt.authorize({
@@ -51,21 +60,11 @@ ioServer.use(ioJwt.authorize({
 	handshake: true
 }));
 
-// Handle websocket connections
-ioServer.on('connection', function(socket)
+// Websocket handling
+chat(ioServer);
+
+// Listen
+httpServer.listen(config.httpPort, function()
 {
-	socket.on('chat-message', function(data)
-	{
-		console.log('chat-message event:', data);
-
-		// Emit message to all connections
-		ioServer.emit('chat-message', {
-			message: data.message,
-			nick: socket.decoded_token.nick
-		});
-	});
-
-	socket.on('disconnect', function(data)
-	{
-	});
+	console.info("🌎  Listening on port %s", config.httpPort);
 });

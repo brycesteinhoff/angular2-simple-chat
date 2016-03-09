@@ -28,6 +28,10 @@ export class WebsocketService {
 					success: false,
 					error: 'Authorization token missing'
 				});
+
+				observer.complete();
+
+				return false;
 			}
 
 			this.io = io.connect('', {
@@ -38,6 +42,8 @@ export class WebsocketService {
 				observer.next({
 					success: true
 				});
+
+				observer.complete();
 			});
 
 			this.io.on('error', () => {
@@ -46,25 +52,29 @@ export class WebsocketService {
 				observer.error({
 					success: false,
 					error: 'Error connecting to websocket'
-				})
+				});
+
+				observer.complete();
 			});
 		});
 	}
 
-	emit(eventName: string, data, room?: string)
+	emit(eventName: string, data)
 	{
 		let io = this.io;
 
-		if (room) {
-			io = io.to(room);
+		if (io) {
+			io.emit(eventName, data);
 		}
-
-		io.emit(eventName, data);
 	}
 
 	on(eventName: string, callback)
 	{
-		this.io.on(eventName, callback);
+		let io = this.io;
+
+		if (io) {
+			this.io.on(eventName, callback);
+		}
 	}
 
 }

@@ -1,6 +1,7 @@
 import { Component } from 'angular2/core';
 import { Router } from 'angular2/router';
 
+import { tokenPresent } from '../services/jwt';
 import { AuthService } from '../services/auth';
 
 // Welcome component
@@ -28,9 +29,10 @@ export class WelcomeComponent {
 
 	ngOnInit()
 	{
-		// Check if user is already authenticated
-		// if so redirect to chat select
-		// this._router.navigate(['ChatSelect']);
+		// Maybe move to a decorator?
+		if (tokenPresent()) {
+			this._router.navigate(['ChatSelect']);
+		}
 	}
 
 	guestSignIn()
