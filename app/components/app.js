@@ -1,8 +1,12 @@
 import { Component } from 'angular2/core';
 import { RouteConfig, ROUTER_DIRECTIVES } from 'angular2/router';
 
+import { JwtService } from '../services/jwt';
+import { HeadersService } from '../services/headers';
+
 import { WelcomeComponent } from './welcome';
-import { ChatComponent } from './chat';
+import { ChatSelectComponent } from './chat-select';
+import { ChatRoomComponent } from './chat-room';
 
 // Root app component
 
@@ -12,7 +16,8 @@ import { ChatComponent } from './chat';
 		<h1>App Component</h1>
 		<router-outlet></router-outlet>
 	`,
-	directives: [ROUTER_DIRECTIVES]
+	directives: [ROUTER_DIRECTIVES],
+	providers: [JwtService, HeadersService]
 })
 @RouteConfig([
 	// Welcome
@@ -23,11 +28,18 @@ import { ChatComponent } from './chat';
 		useAsDefault: 	true
 	},
 
-	// Chat
+	// Chat room select
+	{
+		path: 			'/chat',
+		name: 			'ChatSelect',
+		component: 		ChatSelectComponent
+	},
+
+	// Chat room
 	{
 		path: 			'/chat/:room',
-		name: 			'Chat',
-		component: 		ChatComponent
+		name: 			'ChatRoom',
+		component: 		ChatRoomComponent
 	}
 ])
 export class AppComponent {}

@@ -3,4 +3,5 @@ ChatApp.sublime-project
 ChatApp.sublime-workspace
 /.vagrant
 /node_modules
+npm-debug.log
 /public/build
