@@ -28,6 +28,10 @@ npm run serve
 
 Access the app: `http://localhost:8080`
 
+## Demo
+
+Access the live demo here: `http://ng2-chat.brycesteinhoff.com`
+
 ## Tools
 
 This app uses these tools, among others:
