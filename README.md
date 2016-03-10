@@ -22,7 +22,7 @@ And run it there:
 
 ```sh
 vagrant ssh
-cd angular2-simple-chat
+cd ~/angular2-simple-chat
 npm run serve
 ```
 
