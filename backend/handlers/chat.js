@@ -1,7 +1,4 @@
-var Message = require('../models/message');
-
-// There's a lot going on in here...
-// Need to split this up and organize it better
+var dbService = require('../services/db');
 
 module.exports = function(ioServer)
 {
@@ -13,6 +10,7 @@ module.exports = function(ioServer)
 
 		var guest = socket.decoded_token.guest;
 
+		// Incoming chat message
 		socket.on('chat-message', function(data)
 		{
 			// Emit message to all connections in room
@@ -23,53 +21,36 @@ module.exports = function(ioServer)
 			});
 
 			// Save message in Mongo
-			var message = new Message({
+			dbService.saveMessage({
 				room: data.room,
 				nick: nick,
 				guest: guest,
 				message: data.message
 			});
-
-			message.save(function(err, message)
-			{
-				if (err) {
-					console.error('Error saving message:', err);
-				}
-			});
 		});
 
+		// Socket joins room
 		socket.on('room-join', function(data)
 		{
 			// Join room
 			socket.join(data.room);
 
 			// Get recent messages
-			var date = new Date();
-			date.setSeconds(date.getSeconds() - 1200); // 20 minutes
-
-			Message.find({
-				room: data.room,
-				createdAt: { $gte: date }
-			})
-			.limit(15)
-			.sort('createdAt')
-			.exec(function(err, messages)
+			dbService.getRecentMessages(data.room)
+			.then(function(messages)
 			{
-				if (err) {
-					console.error('Error retrieving recent messages:', err);
-				}
-
 				// Send each recent message out to this socket
-				messages.forEach(function(element, index, array) {
+				messages.forEach(function(message) {
 					socket.emit('chat-message', {
-						message: element.message,
-						room: element.room,
-						nick: element.nick
+						message: message.message,
+						room: message.room,
+						nick: message.nick
 					});
 				});
 			});
 		});
 
+		// Socket leaves room
 		socket.on('room-leave', function(data)
 		{
 			// Leave room

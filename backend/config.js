@@ -21,6 +21,10 @@ module.exports = {
 				requestProperty: 'decoded_token' // Decoded token will be available on req.decoded_token
 			});
 		}
-	}
+	},
+
+	// What is recent for the purposes of
+	// chat backlog and recently used rooms?
+	recentSeconds: 1200, // 20 minutes
 
 }

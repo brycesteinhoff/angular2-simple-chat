@@ -29,6 +29,7 @@ apiRoutes(app);
 
 // Partials route
 // Probably don't need this after all
+// Building templates in with the bundle
 // app.get('/partials/:name', function(req, res)
 // {	
 // 	res.sendFile(path.resolve(__dirname + '/../app/views/partials/' + req.params.name + '.html'));

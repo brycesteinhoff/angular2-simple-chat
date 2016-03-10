@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from 'angular2/core';
 
-// TO-DO: This should probably be done server-side
+// TO-DO: This should be done server-side
 
 @Pipe({
 	name: 'stripHTML'
