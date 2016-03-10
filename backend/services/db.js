@@ -50,7 +50,7 @@ var isNickRecent = function(nick)
 {
 	// TO-DO: Wrap this up in promise and return
 	// boolean after Mongoose promise resolves.
-	// Auth handler doesn't need to know about count.
+	// Consumers don't need to know about count.
 
 	return Message.count({
 		nick: nick,
