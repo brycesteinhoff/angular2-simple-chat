@@ -13,7 +13,7 @@ import { AppComponent } from './components/app';
 document.addEventListener('DOMContentLoaded', function()
 {
 
-	// enableProdMode();
+	enableProdMode();
 	
 	bootstrap(
 		AppComponent,

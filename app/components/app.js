@@ -8,6 +8,8 @@ import { WelcomeComponent } from './welcome';
 import { ChatSelectComponent } from './chat-select';
 import { ChatRoomComponent } from './chat-room';
 
+import '../sass/style.scss'; // Common styles
+
 // Root app component
 
 @Component({

@@ -73,7 +73,7 @@ export class WebsocketService {
 		let io = this.io;
 
 		if (io) {
-			this.io.on(eventName, callback);
+			io.on(eventName, callback);
 		}
 	}
 
