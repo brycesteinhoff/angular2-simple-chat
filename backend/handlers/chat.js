@@ -39,6 +39,8 @@ module.exports = function(ioServer)
 			dbService.getRecentMessages(data.room)
 			.then(function(messages)
 			{
+				messages.reverse();
+				
 				// Send each recent message out to this socket
 				messages.forEach(function(message) {
 					socket.emit('chat-message', {

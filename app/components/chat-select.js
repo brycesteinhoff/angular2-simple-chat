@@ -1,6 +1,7 @@
 import slug from 'slug';
 import { Component } from 'angular2/core';
-import { Router } from 'angular2/router';
+import { NgIf } from 'angular2/common';
+import { Router, ROUTER_DIRECTIVES } from 'angular2/router';
 import { Http } from 'angular2/http';
 
 import { tokenPresent } from '../services/jwt';
@@ -10,17 +11,28 @@ import { HeadersService } from '../services/headers';
 
 @Component({
 	template: `
-		<h2>Chat Select</h2>
-		<div class="rooms-recent" [innerHTML]="recentRooms"></div>
+		<h2 class="page-header">Join a Chat Room</h2>
+
+		<div *ngIf="recentRooms.length">
+			<h3 class="page-header">Choose a recently active room</h3>
+
+			<div class="chat-rooms-recent list-group">
+				<a *ngFor="#room of recentRooms" [routerLink]="['ChatRoom', { room: room }]" class="list-group-item">{{ room }}</a>
+			</div>
+
+			<h3 class="page-header">Or start your own!</h3>
+		</div>
+
 		<form>
 			<div class="form-group">
-				<label for="room">Room:</label>
+				<label for="room">Type a room name:</label>
 				<input type="text" class="form-control" id="room" [(ngModel)]="room" />
 			</div> <!-- .form-group -->
 
-			<button type="submit" class="btn btn-default" (click)="joinRoom()">Join</button>
+			<button type="submit" class="btn btn-default pull-right" (click)="joinRoom()">Join</button>
 		</form>
-	`
+	`,
+	directives: [ROUTER_DIRECTIVES, NgIf]
 })
 export class ChatSelectComponent {
 
@@ -38,11 +50,15 @@ export class ChatSelectComponent {
 		this.endpoints = {
 			'recent': '/api/rooms/recent'
 		};
+
+		this.recentRooms = [];
+
+		this.room = '';
 	}
 
 	ngOnInit()
 	{
-		// Maybe move to a decorator?
+		// TO-DO: Maybe move to a decorator?
 		if (!tokenPresent()) {
 			this._router.navigate(['Welcome']);
 			return false;
@@ -54,14 +70,18 @@ export class ChatSelectComponent {
 
 	joinRoom()
 	{
-		// Slugify the submitted room name
-		let room = slug(this.room.trim());
+		let room = this.room;
 
-		if (room) {
-			this._router.navigate(['ChatRoom', { room: room }]);
-		} else {
+		room = room.trim();
+
+		if (!room) {
 			this.room = '';
+			return false;
 		}
+		
+		room = slug(room);
+
+		this._router.navigate(['ChatRoom', { room: room }]);
 	}
 
 	getRecentlyActive()
@@ -70,11 +90,9 @@ export class ChatSelectComponent {
 		.map(res => res.json())
 		.subscribe(
 			res => {
-				this.recentRooms = '';
-
-				res.forEach((element) =>
+				res.forEach((roomName) =>
 				{
-					this.recentRooms = this.recentRooms + ' <a href="/chat/' + element + '">' + element + '</a>';
+					this.recentRooms.push(roomName);
 				});
 			},
 			error => {

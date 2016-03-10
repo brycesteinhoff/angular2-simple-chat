@@ -8,28 +8,31 @@ import { AuthService } from '../services/auth';
 
 @Component({
 	template: `
-		<h2>Welcome</h2>
+		<h2 class="page-header">Welcome</h2>
 		<form>
 			<div class="form-group">
-				<label for="nick">Nickname:</label>
+				<label for="nick">Choose a nickname:</label>
 				<input type="text" class="form-control" id="nick" [(ngModel)]="nick" />
 			</div> <!-- .form-group -->
 
-			<button type="submit" class="btn btn-default" (click)="guestSignIn()">Sign in</button>
+			<button type="submit" class="btn btn-default pull-right" (click)="guestSignIn()">Sign in</button>
 		</form>
-	`,
-	providers: [AuthService]
+	`
 })
 export class WelcomeComponent {
 
-	constructor(_router: Router, _authService: AuthService) {
+	constructor(_router: Router, _authService: AuthService)
+	{
 		this._router = _router;
+
 		this._authService = _authService;
+
+		this.nick = '';
 	}
 
 	ngOnInit()
 	{
-		// Maybe move to a decorator?
+		// TO-DO: Maybe move to a decorator?
 		if (tokenPresent()) {
 			this._router.navigate(['ChatSelect']);
 		}
@@ -37,13 +40,20 @@ export class WelcomeComponent {
 
 	guestSignIn()
 	{
+		if (!this.nick.trim()) {
+			return false;
+		}
+
 		this._authService.guestSignIn(this.nick)
 		.subscribe(
 			res => {
 				this._router.navigate(['ChatSelect']);
 			},
 			error => {
-				// Show error to user
+				// TO-DO: Implement better flash messaging service
+				alert(error.error);
+
+				this.nick = '';
 			}
 		);
 	}

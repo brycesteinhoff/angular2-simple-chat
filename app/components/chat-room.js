@@ -9,11 +9,17 @@ import { ChatMessageComponent } from './chat-message';
 
 @Component({
 	template: `
-		<h2>Chat Room</h2>
-		<div #history class="chat-history"></div>
-		<textarea class="form-control" rows="3" (keyup)="onKeyUp($event)" [(ngModel)]="message"></textarea>
+		<h2 class="page-header">Chat Room: <span class="chat-room-name">{{ room }}</span></h2>
 
-		<button type="submit" class="btn btn-default" (click)="sendMessage()">Send Message</button>
+		<div id="chat-history" class="chat-history">
+			<div #history></div>
+		</div>
+
+		<div class="form-group">
+			<textarea id="chat-message-box" class="form-control" rows="1" (keyup)="onKeyUp($event)" [(ngModel)]="message"></textarea>
+		</div>
+
+		<button type="submit" class="btn btn-default pull-right" (click)="sendMessage()">Send Message</button>
 	`,
 	providers: [WebsocketService]
 })
@@ -38,15 +44,20 @@ export class ChatRoomComponent implements CanDeactivate {
 		this._elementRef = _elementRef;
 
 		this.room = undefined;
+
+		this.el_history = undefined;
 	}
 
 	ngOnInit()
 	{
-		// Maybe move to a decorator?
+		// TO-DO: Maybe move to a decorator?
 		if (!tokenPresent()) {
 			this._router.navigate(['Welcome']);
 			return false;
 		}
+
+		// Probably a better way to do this
+		this.el_history = document.getElementById('chat-history');
 
 		this.identifyRoom();
 
@@ -112,9 +123,18 @@ export class ChatRoomComponent implements CanDeactivate {
 		// Load new message component into chat history element
 		this._dynamicComponentLoader
 		.loadIntoLocation(ChatMessageComponent, this._elementRef, 'history')
-		.then((res) => {
+		.then((res) =>
+		{
 			res.instance.setContent(data);
+
+			this.scrollHistory();
 		});
+	}
+
+	scrollHistory()
+	{
+		// Scroll to bottom
+		this.el_history.scrollTop = this.el_history.scrollHeight;
 	}
 
 	routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction)

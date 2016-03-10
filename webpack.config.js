@@ -37,7 +37,7 @@ module.exports = {
 			},
 			{
 				test: /\.s?css$/, // Match scss or css
-				loader: ExtractTextPlugin.extract('style', 'css!postcss!sass') // Order of these loaders is important
+				loader: ExtractTextPlugin.extract('style', 'css?minimize!postcss!sass') // Order of these loaders is important
 			},
 			{
 				test: /\.(ttf|eot|svg|woff2?)$/,

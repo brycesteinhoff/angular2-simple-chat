@@ -31,7 +31,7 @@ var getRecentMessages = function(room)
 		createdAt: { $gte: _recentDate() }
 	})
 	.limit(15)
-	.sort('createdAt')
+	.sort('-createdAt')
 	.exec();
 };
 
@@ -45,8 +45,22 @@ var getRecentRooms = function()
 	.exec();
 };
 
+// Check if nick is recently active
+var isNickRecent = function(nick)
+{
+	// TO-DO: Wrap this up in promise and return
+	// boolean after Mongoose promise resolves.
+	// Auth handler doesn't need to know about count.
+
+	return Message.count({
+		nick: nick,
+		createdAt: { $gte: _recentDate() }
+	});
+};
+
 module.exports = {
 	saveMessage: saveMessage,
 	getRecentMessages: getRecentMessages,
-	getRecentRooms: getRecentRooms
+	getRecentRooms: getRecentRooms,
+	isNickRecent: isNickRecent
 };

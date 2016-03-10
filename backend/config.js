@@ -6,7 +6,7 @@ module.exports = {
 
 	httpPort: 8080,
 
-	db: 'ChatApp',
+	db: 'angular2-simple-chat',
 
 	auth: {
 		jwtSecret: jwtSecret,
