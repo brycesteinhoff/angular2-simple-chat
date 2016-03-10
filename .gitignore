@@ -1,6 +1,5 @@
-WebChallenge-ChatRoom.pdf
-ChatApp.sublime-project
-ChatApp.sublime-workspace
+angular2-simple-chat.sublime-project
+angular2-simple-chat.sublime-workspace
 /.vagrant
 /node_modules
 npm-debug.log

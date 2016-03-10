@@ -3,7 +3,7 @@
 # Some provisioning variables
 node_version="5.7.1"
 n_directory="/opt/n"
-app_directory="/home/vagrant/ChatApp"
+app_directory="/home/vagrant/angular2-simple-chat"
 
 echo "--- Running vagrant-provision.sh ---"
 
