@@ -41,4 +41,9 @@ echo "--- Installing webpack globally ---"
 sudo npm install --global webpack
 
 echo "--- Bundling app ---"
+
+# Build sometimes fails without
+sudo npm rebuild node-sass
+sudo npm install unicode
+
 sudo npm run webpack:prod
